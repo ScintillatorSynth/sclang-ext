@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cmake --build .
-
+make -j
+make install
