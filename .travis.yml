@@ -1,0 +1,42 @@
+language: cpp
+
+matrix:
+    include:
+        - os: osx
+          osx_image: xcode11.1
+        - os: linux
+          dist: trusty
+          sudo: required
+
+before_install:
+    - $TRAVIS_BUILD_DIR/.travis/before-install-$TRAVIS_OS_NAME.sh
+
+before_script:
+    - mkdir build && cd build
+    - $TRAVIS_BUILD_DIR/.travis/before-script-$TRAVIS_OS_NAME.sh
+
+script:
+    - $TRAVIS_BUILD_DIR/.travis/script-$TRAVIS_OS_NAME.sh
+
+before_deploy:
+    - mkdir -p $HOME/binaries/sclang-ext
+    - cd $TRAVIS_BUILD_DIR/build/install-ext && tar czf $HOME/binaries/sclang-ext/sclang-ext-$TRAVIS_OS_NAME-$TRAVIS_COMMIT.tgz *
+    - cd $HOME/binaries/sclang-ext && shasum -a 256 -b sclang-ext-$TRAVIS_OS_NAME-$TRAVIS_COMMIT.tgz > $HOME/binaries/sclang-ext/sclang-ext-$TRAVIS_OS_NAME-$TRAVIS_COMMIT.sha256
+    - export S3_URL='http://scintillator-synth-coverage.s3-website-us-west-1.amazonaws.com/binaries/sclang-ext/sclang-ext-'$TRAVIS_OS_NAME'-'$TRAVIS_COMMIT'.tgz'
+    - export FWD_HTML='<html><head><meta http-equiv="refresh" content="0; url='$S3_URL'" /></head></html>'
+    - echo $FWD_HTML > $HOME/binaries/sclang-ext/sclang-ext-$TRAVIS_OS_NAME-latest.html
+
+deploy:
+    - provider: s3
+      access_key_id: $AWS_KEY
+      secret_access_key: $AWS_SECRET
+      bucket: scintillator-synth-coverage
+      local-dir: $HOME/binaries
+      upload-dir: binaries
+      verbose: true
+      edge: true
+      cleanup: false
+      acl: public_read
+      on:
+        branch: master
+
