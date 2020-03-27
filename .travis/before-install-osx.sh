@@ -2,9 +2,11 @@
 
 export HOMEBREW_NO_ANALYTICS=1
 
-brew update
-brew unlink python@2
-brew install ccache
+brew install libsndfile || brew install libsndfile || exit 1
+brew install portaudio || exit 2
+brew install ccache || exit 3
+brew install qt5 || exit 4
+brew link qt5 --force || exit 5
 
 export PATH="/usr/local/opt/ccache/libexec:$PATH"
 

@@ -11,6 +11,7 @@ else()
     message(STATUS "Scintillator build directory set to: ${INSTALL_EXT_DIR}")
 endif()
 
+if(APPLE)
 ExternalProject_add(supercollider
     PREFIX ext
     STEP_TARGETS install
@@ -19,6 +20,8 @@ ExternalProject_add(supercollider
     GIT_SHALLOW ON
     GIT_PROGRESS ON
     UPDATE_COMMAND ""
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${INSTALL_EXT_DIR} -DSUPERNOVA=OFF -DSC_ABLETON_LINK=OFF -DSC_EL=OFF
+    CMAKE_ARGS -DRULE_LAUNCH_COMPILE=ccache -DCMAKE_PREFIX_PATH=${SCLANG_CMAKE_PREFIX} -DCMAKE_OSX_DEPLOYMENT_TARGET=10.10 -DCMAKE_INSTALL_PREFIX=${INSTALL_EXT_DIR} -DSUPERNOVA=OFF -DSC_ABLETON_LINK=OFF -DSC_EL=OFF
 )
-
+elseif(UNIX)
+else()
+endif()
