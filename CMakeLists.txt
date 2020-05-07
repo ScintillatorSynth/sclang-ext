@@ -33,5 +33,16 @@ ExternalProject_add(supercollider
     UPDATE_COMMAND ""
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_EXT_DIR} -DSUPERNOVA=OFF -DSC_ABLETON_LINK=OFF -DSC_EL=OFF
 )
+elseif(WIN32)
+ExternalProject_add(supercollider
+    PREFIX ext
+    STEP_TARGETS install
+    GIT_REPOSITORY https://github.com/supercollider/supercollider
+    GIT_TAG 3.11
+    GIT_SHALLOW ON
+    GIT_PROGRESS ON
+    UPDATE_COMMAND ""
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${INSTALL_EXT_DIR} -DSC_QT=OFF -DSC_IDE=OFF -DNO_LIBSNDFILE=ON
 else()
+    message(FATAL_ERROR "unsupported platform")
 endif()
