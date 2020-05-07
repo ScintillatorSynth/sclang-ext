@@ -43,6 +43,7 @@ ExternalProject_add(supercollider
     GIT_PROGRESS ON
     UPDATE_COMMAND ""
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${INSTALL_EXT_DIR} -DSC_QT=OFF -DSC_IDE=OFF -DNO_LIBSNDFILE=ON
+)
 else()
     message(FATAL_ERROR "unsupported platform")
 endif()
